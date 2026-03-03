@@ -1,16 +1,23 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
 app.get("/download-work-order", (req, res) => {
     const filePath = path.join(__dirname, "work-order.pdf");
 
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", "inline");
-    res.setHeader("Cache-Control", "no-store");
+    const stat = fs.statSync(filePath);
 
-    res.sendFile(filePath);
+    res.writeHead(200, {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": 'attachment; filename="work-order.pdf"',
+        "Content-Length": stat.size,
+        "Cache-Control": "no-store"
+    });
+
+    const readStream = fs.createReadStream(filePath);
+    readStream.pipe(res);
 });
 
 const PORT = process.env.PORT || 3000;

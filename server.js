@@ -26,10 +26,13 @@ app.get("/download-work-order", (req, res) => {
         </style>
     </head>
     <body>
-        <iframe src="/pdf"></iframe>
+        <iframe id="pdfFrame" src="/pdf"></iframe>
 
         <script>
-            window.onload = function() {
+            const frame = document.getElementById("pdfFrame");
+
+            frame.onload = function() {
+                // wait slightly after rendering
                 setTimeout(() => {
                     window.print();
                 }, 800);
@@ -53,3 +56,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log("Server running on port " + PORT);
 });
+

@@ -26,18 +26,24 @@ app.get("/download-work-order", (req, res) => {
         </style>
     </head>
     <body>
+
         <iframe id="pdfFrame" src="/pdf"></iframe>
 
         <script>
             const frame = document.getElementById("pdfFrame");
 
             frame.onload = function() {
-                // wait slightly after rendering
                 setTimeout(() => {
-                    window.print();
-                }, 800);
+                    try {
+                        frame.contentWindow.focus();
+                        frame.contentWindow.print();
+                    } catch(e) {
+                        window.print();
+                    }
+                }, 1200);
             };
         </script>
+
     </body>
     </html>
     `);
@@ -48,6 +54,7 @@ app.get("/pdf", (req, res) => {
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", "inline");
+
     res.sendFile(filePath);
 });
 
@@ -56,4 +63,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log("Server running on port " + PORT);
 });
-
